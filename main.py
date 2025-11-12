@@ -7,5 +7,8 @@ load_dotenv() # Load .env variables
 
 # Initialize language models 
 
-#llm = ChatOpenAI(model = "gpt-4o-mini")
-llm = ChatAnthropic(model = "claude-3-5-sonnet-20241022")
+llm = ChatOpenAI(model = "gpt-4o-mini")
+#llm = ChatAnthropic(model = "claude-3-5-sonnet-20241022")
+
+response = llm.invoke("Hello! Where are you located?")
+print(response)
