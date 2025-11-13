@@ -2,13 +2,52 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import PydanticOutputParser
+from langchain.agents import create_agent
+
 
 load_dotenv() # Load .env variables 
 
-# Initialize language models 
 
+#This is the model for the response
+class ResearchResponse(BaseModel):
+    topic: str
+    summary: str
+    sources: list[str]
+    tools_used: list[str]
+
+# Initialize language models 
 llm = ChatOpenAI(model = "gpt-4o-mini")
 #llm = ChatAnthropic(model = "claude-3-5-sonnet-20241022")
 
-response = llm.invoke("Hello! Where are you located?")
+#set uo the output parser to use the ResearchResponse model
+parser= PydanticOutputParser(pydantic_object=ResearchResponse)
+
+#Tools list
+tools=[]
+
+agent = create_agent(
+    model=llm,
+     tools=tools,
+    system_prompt=f"""
+    You are a research assistant. 
+    Given a user query, provide a concise summary of the topic, list relevant sources, and mention any tools you used to gather the information.
+    
+    Format your response as JSON with these fields:
+    - topic: the main topic
+    - summary: a concise summary
+    - sources: list of relevant sources
+    - tools_used: list any tools used
+    
+    {parser.get_format_instructions()}
+    """
+   
+)
+
+#executes the agent / generates the response
+response = agent.invoke(
+   {"messages": [{"role": "user", "content": "Where is located Dalcahue, Chiloe?"}]}
+)
+
 print(response)
