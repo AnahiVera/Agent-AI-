@@ -5,6 +5,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain.agents import create_agent
+from tools import search_tool
 
 
 load_dotenv() # Load .env variables 
@@ -25,11 +26,11 @@ llm = ChatOpenAI(model = "gpt-4o-mini")
 parser= PydanticOutputParser(pydantic_object=ResearchResponse)
 
 #Tools list
-tools=[]
+tools=[search_tool]
 
 agent = create_agent(
     model=llm,
-     tools=tools,
+    tools=tools,
     system_prompt=f"""
     You are a research assistant. 
     Given a user query, provide a concise summary of the topic, list relevant sources, and mention any tools you used to gather the information.
@@ -46,8 +47,13 @@ agent = create_agent(
 )
 
 #executes the agent / generates the response
+query = input("What can I help you research? ")
 response = agent.invoke(
-   {"messages": [{"role": "user", "content": "Where is located Dalcahue, Chiloe?"}]}
+   {"messages": [{"role": "user", "content": "What is the capital of Chile"}]}
 )
 
-print(response)
+try:
+    structured_response = parser.parse(response.get("messages")[1].content)
+    print(structured_response)
+except Exception as error:
+    print("Error parsing response ", error, "Raw Response: - ", response)
