@@ -47,13 +47,13 @@ agent = create_agent(
 )
 
 #executes the agent / generates the response
-query = input("What can I help you research? ")
+query = input("What can I help you research?:")
 response = agent.invoke(
-   {"messages": [{"role": "user", "content": "What is the capital of Chile"}]}
+   {"messages": [{"role": "user", "content": query}]}
 )
 
 try:
-    structured_response = parser.parse(response.get("messages")[1].content)
+    structured_response = parser.parse(response.get("messages")[-1].content)
     print(structured_response)
 except Exception as error:
     print("Error parsing response ", error, "Raw Response: - ", response)
