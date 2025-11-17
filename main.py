@@ -5,7 +5,8 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain.agents import create_agent
-from tools import search_tool
+from tools import search_tool, wiki_tool, save_to_txt_tool
+
 
 
 load_dotenv() # Load .env variables 
@@ -26,7 +27,7 @@ llm = ChatOpenAI(model = "gpt-4o-mini")
 parser= PydanticOutputParser(pydantic_object=ResearchResponse)
 
 #Tools list
-tools=[search_tool]
+tools=[search_tool, wiki_tool, save_to_txt_tool]
 
 agent = create_agent(
     model=llm,
