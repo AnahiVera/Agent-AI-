@@ -5,7 +5,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain.agents import create_agent
-from tools import search_tool, wiki_tool, save_to_txt_tool
+from tools import save_to_txt_tool, read_cv_tool, read_personality_tool
 
 
 
@@ -27,7 +27,7 @@ llm = ChatOpenAI(model = "gpt-4o-mini")
 parser= PydanticOutputParser(pydantic_object=ResearchResponse)
 
 #Tools list
-tools=[search_tool, wiki_tool, save_to_txt_tool]
+tools=[save_to_txt_tool, read_personality_tool, read_cv_tool]
 
 agent = create_agent(
     model=llm,
@@ -42,7 +42,6 @@ agent = create_agent(
     Format your response as JSON with these fields:
     - topic: the main topic
     - summary: a concise summary
-    - sources: list of relevant sources
     - tools_used: list any tools used
     
     {parser.get_format_instructions()}
@@ -51,7 +50,7 @@ agent = create_agent(
 )
 
 #executes the agent / generates the response
-query = input("What can I help you research?:")
+query = input("What would you like to know about my creator?:")
 response = agent.invoke(
    {"messages": [{"role": "user", "content": query}]}
 )
