@@ -18,16 +18,19 @@ def save_to_txt(data:str, filename: str = "research_output.txt"):
 
     return f"Data succesfully saved to {filename}"
 
+
+
+@tool("personal_info")
+def save_to_txt_tool(data:str, filename: str = "research_output.txt"):
+    """Save data to a text file with a timestamp."""
+    return save_to_txt(data, filename)
+
 @tool("save_to_txt")
 def save_to_txt_tool(data:str, filename: str = "research_output.txt"):
     """Save data to a text file with a timestamp."""
     return save_to_txt(data, filename)
 
 
-@tool("web_search")
-def search_tool(query: str) -> str:
-    """Search the web for information using DuckDuckGo."""
-    return duckduckgo_search.run(query)
 
 api_wrapper = WikipediaAPIWrapper(top_k_results=2, doc_content_chars_max=200)
 wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)

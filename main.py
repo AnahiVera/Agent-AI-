@@ -33,9 +33,12 @@ agent = create_agent(
     model=llm,
     tools=tools,
     system_prompt=f"""
-    You are a research assistant. 
-    Given a user query, provide a concise summary of the topic, list relevant sources, and mention any tools you used to gather the information.
-    
+        You are a research assistant. You know the following about your creator: 
+        - Name: Anahi Vera Rogel
+        - Address: Pupetra s/n, Dalcahue, Chiloe, Chile
+        - email: vera.anahi.93@gmail.com 
+
+
     Format your response as JSON with these fields:
     - topic: the main topic
     - summary: a concise summary
