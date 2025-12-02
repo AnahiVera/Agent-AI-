@@ -125,29 +125,30 @@ def is_question_allowed(query: str) -> bool:
 # --------------------------------------------------------
 # EJECUCIÓN PRINCIPAL
 # --------------------------------------------------------
+# solo se ejecuta si se corre este archivo directamente de lo contrario se importa como módulo
+if __name__ == "__main__":
+    query = input("What would you like to know about my creator?: ")
 
-query = input("What would you like to know about my creator?: ")
+    print("\n[DEBUG] Llamando failsafe...")
+    if not is_question_allowed(query):
+        print("[DEBUG] FAILSAFE BLOQUEÓ LA CONSULTA. NO LLAMAREMOS AL AGENTE")
+        print("No tengo información sobre ese tema. Solo puedo responder preguntas relacionadas con Anahi.")
+        exit()
 
-print("\n[DEBUG] Llamando failsafe...")
-if not is_question_allowed(query):
-    print("[DEBUG] FAILSAFE BLOQUEÓ LA CONSULTA. NO LLAMAREMOS AL AGENTE")
-    print("No tengo información sobre ese tema. Solo puedo responder preguntas relacionadas con Anahi.")
-    exit()
+    print("[DEBUG] FAILSAFE PERMITIÓ LA PREGUNTA. LLAMANDO AL AGENTE... ✔")
 
-print("[DEBUG] FAILSAFE PERMITIÓ LA PREGUNTA. LLAMANDO AL AGENTE... ✔")
+    # 2. SI PASA EL FILTRO, SE EJECUTA EL AGENTE NORMALMENTE
+    response = agent.invoke(
+       {"messages": [{"role": "user", "content": query}]}
+    )
 
-# 2. SI PASA EL FILTRO, SE EJECUTA EL AGENTE NORMALMENTE
-response = agent.invoke(
-   {"messages": [{"role": "user", "content": query}]}
-)
+    print("[DEBUG] RESPUESTA DEL AGENTE RECIBIDA")
 
-print("[DEBUG] RESPUESTA DEL AGENTE RECIBIDA")
-
-# 3. Parseo normal
-try:
-    structured_response = parser.parse(response.get("messages")[-1].content)
-    print("[DEBUG] PARSEO EXITOSO ✔")
-    print("[IA]:", structured_response.summary)
-except Exception as error:
-    print("[DEBUG] ERROR PARSEANDO LA RESPUESTA")
-    print("Error parsing response ", error, "Raw Response: - ", response)
+    # 3. Parseo normal
+    try:
+        structured_response = parser.parse(response.get("messages")[-1].content)
+        print("[DEBUG] PARSEO EXITOSO ✔")
+        print("[IA]:", structured_response.summary)
+    except Exception as error:
+        print("[DEBUG] ERROR PARSEANDO LA RESPUESTA")
+        print("Error parsing response ", error, "Raw Response: - ", response)
