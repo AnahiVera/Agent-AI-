@@ -39,3 +39,6 @@ wheels/
 # OS
 .DS_Store
 Thumbs.db
+
+# Personal info
+cv.json
